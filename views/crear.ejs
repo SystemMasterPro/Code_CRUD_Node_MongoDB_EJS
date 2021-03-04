@@ -1,0 +1,17 @@
+<%- include("templates/cabecera", {tituloWeb: 'Crear Jugador' }) %>
+
+    <div class="container">
+        <div class="row">
+            <form action="/jugadores" method="POST">
+                <div class="col-6">
+                    <h3 class="text-center">CREAR JUGADOR</h3>
+                    <input type="text" placeholder="Ingrese el nombre" class="form-control my-2" name="nombre">
+                    <input type="number" placeholder="Ingrese la edad" class="form-control my-2" name="edad">
+                    <input type="text" placeholder="Ingrese el equipo" class="form-control my-2" name="equipo">
+                    <button type="submit" class="btn my-4 btn-success">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <%- include("templates/footer") %>

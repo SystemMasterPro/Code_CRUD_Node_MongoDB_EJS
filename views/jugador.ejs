@@ -1,0 +1,132 @@
+<%- include("templates/cabecera", {tituloWeb: 'Página de Jugadores' }) %>
+    <div class="container">   
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Edad</th>
+                    <th scope="col">Equipo</th>
+                    <th scope="col">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (arrayJugadores.length > 0) { %>
+                    <% arrayJugadores.forEach(jugador => { %>
+                        <tr>
+                            <th>
+                                <%= jugador.id %>
+                            </th>
+                            <td>
+                                <%= jugador.nombre %>
+                            </td>
+                            <td>
+                                <%= jugador.edad %>
+                            </td>
+                            <td>
+                                <%= jugador.equipo %>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-warning editar" data-bs-toggle="modal" data-bs-target="#exampleModal" data-ide = " <%= jugador.id %> ">Editar</button>
+                                <button class="btn btn-danger elemento" data-id = " <%= jugador.id %> "
+                                >Eliminar</button>
+                            </td>
+                        </tr>
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel"></h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="mb-3">
+                                                <label class="col-form-label">Nombre:</label>
+                                                <input name="nombre" id="nombre" type="text" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="col-form-label">Edad:</label>
+                                                <input name="edad" id="edad" type="number" class="form-control">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="message-text" class="col-form-label">Equipo:</label>
+                                                <input name="equipo" id="equipo" class="form-control" id="message-text"></input>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                        <button class="btn btn-warning editar2">Actualizar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <% }) %>
+                    <% } %>
+                <a class="btn btn-primary my-4" href="jugadores/crear">Nuevo Jugador</a>
+            </tbody>
+        </table>
+    </div>
+<%- include("templates/footer") %>
+
+<script>
+    // Traemos los elementos por medio de la clase elemento
+    $('.elemento').on('click',async function () {
+            const id = $(this).attr("data-id");
+            const x = id.slice(1, id.length - 1);
+            // console.log(id);
+            // console.log(x);
+            try {
+                const data = await fetch(`/jugadores/${x}`,{method : 'DELETE'})
+                const respuesta = await data.json()
+                if (respuesta.estado) {
+                    window.location.href='/jugadores'
+                }else{
+                    console.log(respuesta);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        });
+    // VENTANA MODAL DE BOOTSTRAP 5
+    var exampleModal = document.getElementById('exampleModal')
+        exampleModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+            var recipient = button.getAttribute('data-ide')
+            var modalTitle = exampleModal.querySelector('.modal-title')
+            var modalBodyInput = exampleModal.querySelector('.modal-body input')
+
+            modalTitle.textContent = 'Actualizando al ID: ' + recipient
+        });
+
+        // Actualizamos el elemento
+            $('.editar').on('click',async function () {
+                const id = $(this).attr("data-ide");
+                const xx = id.slice(1, id.length - 1);
+                // console.log(id);
+                // console.log(xx);
+                try {
+                    const consulta = await fetch(`/jugadores/find/${xx}`);
+                    const datos = await consulta.json()
+                    // console.log(datos);
+                    document.getElementById('nombre').value = datos.nombre;
+                    document.getElementById('edad').value = datos.edad;
+                    document.getElementById('equipo').value = datos.equipo;
+                    $('.editar2').on('click', async function(){
+                        let nombre = document.getElementById('nombre').value
+                        let edad = document.getElementById('edad').value
+                        let equipo = document.getElementById('equipo').value
+                        const data = await fetch(`/jugadores/${xx}`,{ method: 'PUT', headers: { 'Content-Type': 'application/json' }, body:JSON.stringify({nombre,edad,equipo})});
+                        const respuesta = await data.json()
+                        if (respuesta.estado) {
+                            window.location.href = '/jugadores'
+                        } else {
+                            console.log(respuesta);
+                        }
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            });
+</script>

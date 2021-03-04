@@ -1,0 +1,22 @@
+<%- include("templates/cabecera", {tituloWeb: 'Editar Jugador' }) %>
+
+    <div class="container">
+        <div class="row">
+            <form action="/jugadores" method="PUT">
+                <div class="col-6">
+                    <h3 class="text-center">EDITANDO JUGADOR</h3>
+                    <input type="text" value='' class="form-control my-2" name="nombre">
+                    <input type="number" class="form-control my-2" name="edad">
+                    <input type="text" class="form-control my-2" name="equipo">
+                    <button type="submit" class="btn my-4 btn-success">Actualizar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <%- include("templates/footer") %>
+
+    <script>
+        const data = body.dataset.id;
+        console.log(data);
+    </script>
